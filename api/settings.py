@@ -40,9 +40,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'social_django',
     'api',
+    'flicker_user',
     'group',
-    'user',
-    'photos',
     'rest_framework',
     'oauth2_provider',
     'corsheaders',
@@ -64,11 +63,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
+        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
 }
 
@@ -80,7 +79,7 @@ AUTHENTICATION_BACKENDS = (
 
 ROOT_URLCONF = 'api.urls'
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'flicker_user.FlickerUser'
 
 
 TEMPLATES = [

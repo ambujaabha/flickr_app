@@ -23,7 +23,7 @@ import code
 
 
 urlpatterns = [
-    path('user/', include('user.urls')),
+    path('user/', include('flicker_user.urls')),
     path('admin/', admin.site.urls),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
     path('', include('social_django.urls')),

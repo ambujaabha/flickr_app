@@ -1,17 +1,18 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework import generics
+from rest_framework import generics, status
 from . serializers import ListUserSerializer
-from . models import User
+from . models import FlickerUser
 
 import requests
 
 from .serializers import CreateUserSerializer
+import code
+import json, sys
 
-
-CLIENT_ID = 'T959p70EB2bKnjsDnqgIyJKkScj4iKMsFKCUScc9'
-CLIENT_SECRET = 'pcGirJlNw285vyvEPwdMnkhC0dJZmVmZAg6g9g6gVwYMflDX4WqGXhIz1JKrW6WKhMsKAQbvOubHbatWP3e9HeMAGaxQsJ0c7j8pRG48R81vt8XT7jdvaX9jbNE08J60'
+CLIENT_ID = 'JRJsNQj5KLNge89ogSzdOGcYaL627ThElS25ltm9'
+CLIENT_SECRET = 'tLspLYQISe4bMuOQHCqoXA84VEOYFDA2RcOCgOzFkhx2t0NKvSXzJDw9wu73DOxiJG8OZzVLlkehtYUXxKQ7roZ6o0byiPCmuRdGc4Cyc3A7XRVduN7GuwhKrbvYIAbv'
 
 
 @api_view(['POST'])
@@ -24,6 +25,7 @@ def register(request):
     # Put the data from the request into the serializer 
     serializer = CreateUserSerializer(data=request.data) 
     # Validate the data
+    # code.interact(local=dict(globals(), **locals()))
     if serializer.is_valid():
         # If it is valid, save the data (creates a user).
         serializer.save() 
@@ -38,6 +40,7 @@ def register(request):
                 'client_secret': CLIENT_SECRET,
             },
         )
+        # code.interact(local=dict(globals(), **locals()))
         return Response(r.json())
     return Response(serializer.errors)
 
@@ -103,5 +106,22 @@ def revoke_token(request):
     return Response(r.json(), r.status_code)
 
 class ListUsers(generics.ListAPIView):
-    queryset = User.objects.all()
-    serializer = ListUserSerializer
+    queryset = FlickerUser.objects.all()
+    serializer_class = ListUserSerializer
+
+class CreateUser(generics.CreateAPIView):
+    queryset = FlickerUser.objects.all()
+    serializer_class = CreateUserSerializer
+
+    def create(self, request, *args, **kwargs):
+        # code.interact(local=dict(globals(), **locals()))
+        super(CreateUser, self).create(request, args, kwargs)
+        response = {"status_code": status.HTTP_200_OK,
+                    "message": "Successfully created user.",
+                    "result": request.data}
+        return Response(response)
+
+
+
+
+
