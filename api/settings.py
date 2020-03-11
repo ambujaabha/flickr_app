@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -27,7 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+flickr_api_key  = "b706df6d879dc81612590b0004b08b7f"
+flickr_base_url = "https://api.flickr.com/services/rest/"
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,50 +38,44 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
-    'social_django',
-    'api',
-    'flicker_user',
-    'group',
     'rest_framework',
-    'oauth2_provider',
-    'corsheaders',
+    'rest_framework.authtoken',
+    'photos',
+    'flicker_user'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'oauth2_provider.middleware.OAuth2TokenMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-CORS_ORIGIN_ALLOW_ALL = True
-
+# Here is the rest framework defaut settings and pagination offset size is set to 30 as desired
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-        # 'rest_framework.authentication.SessionAuthentication', # To keep the Browsable API
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 30,
 }
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # To keep the Browsable API
-    'oauth2_provider.backends.OAuth2Backend',
-    'social_core.backends.auth0.Auth0OAuth2'
-)
+SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer', 'JWT'),
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=120),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': True,
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+
+}
 
 ROOT_URLCONF = 'api.urls'
-
-AUTH_USER_MODEL = 'flicker_user.FlickerUser'
-
 
 TEMPLATES = [
     {
@@ -101,22 +96,18 @@ TEMPLATES = [
 WSGI_APPLICATION = 'api.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+#Here is the sqlite3 Database Configuration
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        # 'USER': 'root',
-        # 'PASSWORD': '',
-        # 'HOST': 'localhost',
-        # 'PORT': '',
     }
 }
 
+
 # Password validation
-# https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -135,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/2.0/topics/i18n/
+# https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -149,6 +140,6 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'

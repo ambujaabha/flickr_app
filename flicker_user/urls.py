@@ -1,12 +1,9 @@
-from django.urls import path
+from rest_framework import routers
+from django.conf.urls import url
+from flicker_user import views
 
-from . import views
 
+router = routers.SimpleRouter(trailing_slash=False)
 urlpatterns = [
-    path('register/', views.register),
-    path('token/', views.token),
-    path('token/refresh/', views.refresh_token),
-    path('token/revoke/', views.revoke_token),
-    path('all/', views.ListUsers.as_view(), name=None),
-    path('create/', views.CreateUser.as_view(), name=None),
+    url(r'^load_data$', views.load_data, name='load_data'),
 ]

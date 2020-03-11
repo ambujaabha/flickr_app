@@ -14,17 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
+from django.conf.urls import url,include
 from django.contrib import admin
-from django.conf.urls import url, include
-from django.urls import path
-import oauth2_provider.views as oauth2_views
-from django.conf import settings
-import code
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
+from rest_framework_simplejwt.views import TokenVerifyView
+
 
 
 urlpatterns = [
-    path('user/', include('flicker_user.urls')),
-    path('admin/', admin.site.urls),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('', include('social_django.urls')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^api/v1/', include('photos.urls')),
+    url(r'^api/v1/', include('flicker_user.urls')),
+    url(r'^api/v1/login$', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    url(r'^login/refresh$', TokenRefreshView.as_view(), name='token_refresh'),
+    url(r'^login/verify$', TokenVerifyView.as_view(), name='token_verify'),
 ]
